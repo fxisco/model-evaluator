@@ -15,9 +15,14 @@
 
     <form action="/" method="post" enctype="multipart/form-data">
       {% csrf_token %}
-      <div class="input-field">
-        <input name="keywords" id="keywords" type="text">
-        <label for="keywords">Hashtags or keywords separated by comma</label>
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>File with keywords</span>
+          <input name="keywords" type="file" accept=".txt">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
       </div>
       <div class="center">
         <button type="submit" class="waves-effect waves-light btn green">
