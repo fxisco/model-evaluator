@@ -9,7 +9,6 @@ from .helpers import getValidKeywords
 
 
 def index(request):
-    errors = []
     form = KeywordsForm()
 
     if request.method == 'POST':
@@ -22,17 +21,10 @@ def index(request):
             cleaned_lines = [getValidKeywords(x) for x in limited_lines if x]
 
             return redirect(evaluate, keywords=urlencode({'keywords': ','.join(cleaned_lines)}))
-        else:
-            errors.append('Invalid file')
 
-    data = {
-        "errors": errors
-    }
-
-    return render(request, 'keywords.html', { "data": data, "form": form })
+    return render(request, 'keywords.html', { "form": form })
 
 def evaluate(request, keywords):
-    errors = []
     decoded_keywords = unquote(keywords) if keywords else []
     parsed_string = parse_qs(decoded_keywords)['keywords'][0]
     keywords_parsed = parsed_string.split(',')
@@ -46,7 +38,6 @@ def evaluate(request, keywords):
     tweets = manager.TweetManager.getTweets(tweetCriteria)
 
     data = {
-        "errors": errors,
         "keywords": keywords_parsed,
         "tweets": tweets
     }
