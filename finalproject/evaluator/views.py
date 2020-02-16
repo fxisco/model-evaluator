@@ -10,6 +10,7 @@ from .helpers import getValidKeywords
 
 def index(request):
     errors = []
+    form = KeywordsForm()
 
     if request.method == 'POST':
         form = KeywordsForm(request.POST, request.FILES)
@@ -28,7 +29,7 @@ def index(request):
         "errors": errors
     }
 
-    return render(request, 'keywords.html', { "data": data })
+    return render(request, 'keywords.html', { "data": data, "form": form })
 
 def evaluate(request, keywords):
     errors = []

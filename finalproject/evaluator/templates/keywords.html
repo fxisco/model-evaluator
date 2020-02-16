@@ -3,16 +3,6 @@
 {% block content %}
 <div class="row">
   <div class="col s12 m6 offset-m3">
-    {% if data.errors %}
-    {% for error in data.errors %}
-    <div class="card-panel red darken-1">
-        <span class="white-text">
-          {{error}}
-        </span>
-      </div>
-      {% endfor %}
-    {% endif %}
-
     <form action="/" method="post" enctype="multipart/form-data">
       {% csrf_token %}
       <div class="file-field input-field">
@@ -23,6 +13,21 @@
         <div class="file-path-wrapper">
           <input class="file-path validate" type="text">
         </div>
+        {% if form.keywords.errors %}
+          <span class="helper-text red-text" data-success="right">{{form.keywords.errors}}</span>
+        {% endif %}
+      </div>
+      <div class="file-field input-field">
+        <div class="btn">
+          <span>Model</span>
+          <input name="model" type="file" accept=".model">
+        </div>
+        <div class="file-path-wrapper">
+          <input class="file-path validate" type="text">
+        </div>
+        {% if form.model.errors %}
+          <span class="helper-text red-text" data-success="right">{{form.model.errors}}</span>
+        {% endif %}
       </div>
       <div class="center">
         <button type="submit" class="waves-effect waves-light btn green">
