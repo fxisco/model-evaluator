@@ -13,10 +13,17 @@
 <div class="row">
   {% if data.tweets %}
     <table>
+      <colgroup>
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+        <col span="1" style="width: 25%;">
+     </colgroup>
       <thead>
         <tr>
-            <th>Name</th>
-            <th>Item Name</th>
+            <th>Date</th>
+            <th>Tweet</th>
+            <th>Tweet cleaned</th>
             <th>Evaluation</th>
         </tr>
       </thead>
@@ -24,8 +31,9 @@
       <tbody>
         {% for tweet in data.tweets %}
         <tr>
-          <td>{{tweet.date}}</td>
-          <td>{{tweet.text}}</td>
+          <td>{{tweet.0.date}}</td>
+          <td>{{tweet.0.text}}</td>
+          <td>{{tweet.1}}</td>
           <td>text</td>
         </tr>
         {% endfor %}

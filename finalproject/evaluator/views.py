@@ -3,9 +3,10 @@ from django.urls import reverse
 from csv import reader
 from urllib.parse import urlencode, unquote, parse_qs
 from GetOldTweets3 import manager
+import weka.core.jvm as jvm
 
 from .forms import KeywordsForm
-from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset
+from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset,evaluate_model_and_testset,get_cleaned_tweets
 
 def index(request):
     form = KeywordsForm()
@@ -36,7 +37,10 @@ def evaluate(request, data):
     keywords_parsed = parsed_string.split(',')
     query = ' OR '.join(keywords_parsed)
     tweets = []
-    # load_classification_model(filename)
+
+    jvm.start()
+
+    model = load_classification_model(filename)
 
     tweetCriteria = manager\
         .TweetCriteria()\
@@ -44,12 +48,17 @@ def evaluate(request, data):
         .setLang("it")\
         .setMaxTweets(10)
     tweets = manager.TweetManager.getTweets(tweetCriteria)
-    create_dataset(tweets)
-    tweets = tweets if tweets else []
+    cleaned_tweets = get_cleaned_tweets(tweets)
+    dataset = create_dataset(cleaned_tweets)
+
+    evaluate_model_and_testset(model, dataset)
+
+    jvm.stop()
 
     data = {
         "keywords": keywords_parsed if keywords_parsed else [],
-        "tweets": tweets
+        "tweets": zip(tweets, cleaned_tweets),
+        # "cleaned_tweets": cleaned_tweets
     }
 
     return render(request, 'evaluator.html', { "data": data })
