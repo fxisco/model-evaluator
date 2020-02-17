@@ -5,8 +5,7 @@ from urllib.parse import urlencode, unquote, parse_qs
 from GetOldTweets3 import manager
 
 from .forms import KeywordsForm
-from .helpers import getValidKeywords
-
+from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset
 
 def index(request):
     form = KeywordsForm()
@@ -18,17 +17,26 @@ def index(request):
             csv_file = request.FILES['keywords'].read().decode("utf-8")
             lines = csv_file.splitlines()
             limited_lines = lines[0:10]
-            cleaned_lines = [getValidKeywords(x) for x in limited_lines if x]
+            cleaned_lines = [get_valid_keywords(x) for x in limited_lines if x]
+            file_uploaded = hangle_file_upload(request.FILES['model'])
+            data = {
+                'keywords': ','.join(cleaned_lines),
+                'filename': file_uploaded
+            }
 
-            return redirect(evaluate, keywords=urlencode({'keywords': ','.join(cleaned_lines)}))
+            return redirect(evaluate, data=urlencode(data))
 
     return render(request, 'keywords.html', { "form": form })
 
-def evaluate(request, keywords):
-    decoded_keywords = unquote(keywords) if keywords else []
-    parsed_string = parse_qs(decoded_keywords)['keywords'][0]
+def evaluate(request, data):
+    decoded_data = unquote(data) if data else []
+    parsed_keys = parse_qs(decoded_data)
+    parsed_string = parsed_keys['keywords'][0]
+    filename = parsed_keys['filename'][0]
     keywords_parsed = parsed_string.split(',')
     query = ' OR '.join(keywords_parsed)
+    tweets = []
+    # load_classification_model(filename)
 
     tweetCriteria = manager\
         .TweetCriteria()\
@@ -36,11 +44,12 @@ def evaluate(request, keywords):
         .setLang("it")\
         .setMaxTweets(10)
     tweets = manager.TweetManager.getTweets(tweetCriteria)
+    create_dataset(tweets)
+    tweets = tweets if tweets else []
 
     data = {
-        "keywords": keywords_parsed,
+        "keywords": keywords_parsed if keywords_parsed else [],
         "tweets": tweets
     }
-
 
     return render(request, 'evaluator.html', { "data": data })

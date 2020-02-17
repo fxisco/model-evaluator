@@ -4,5 +4,5 @@ from . import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('evaluate/(?P<keywords>\w+?)', views.evaluate),
+    path('evaluate/(?P<data>\w+?)', views.evaluate),
 ]
