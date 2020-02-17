@@ -10,6 +10,8 @@ import weka.core.jvm as jvm
 import numpy as np
 
 class_values = ["nega", "neut", "posi"]
+RE_EMOJI = re.compile('[\U00010000-\U0010ffff]', flags=re.UNICODE)
+RE_LINKS = re.compile('^https?:\/\/.*[\r\n]*', flags=re.MULTILINE)
 
 def get_valid_keywords(text):
   unaccented_string = unidecode.unidecode(text)
@@ -50,18 +52,30 @@ def load_classification_model(filename):
 
   jvm.stop()
 
+def clean_tweet(tweet_text):
+  cleaned_tweet = unidecode.unidecode(tweet_text)
+  cleaned_tweet = re.sub('http\S+', '', cleaned_tweet)
+  cleaned_tweet = re.sub(r"#(\w+)", '', cleaned_tweet, flags=re.MULTILINE)
+  cleaned_tweet = re.sub(r"@(\w+)", '', cleaned_tweet, flags=re.MULTILINE)
+  cleaned_tweet = re.sub('[^A-Za-z0-9 ]+', '', cleaned_tweet)
+  cleaned_tweet = re.sub(' +', ' ', cleaned_tweet.strip())
+
+  return cleaned_tweet
+
 def create_dataset(tweets):
   jvm.start()
+
   text_att = Attribute.create_string('TEXT')
   nom_att = Attribute.create_nominal('CLASS', class_values)
 
-  dataset = Instances.create_instances("tweets", [text_att, nom_att], 1)
+  dataset = Instances.create_instances("tweets", [text_att, nom_att], len(tweets))
 
-  values = []
-  values.append(dataset.attribute(0).add_string_value("blah de blah"))
-  values.append(Instance.missing_value())
-  inst = Instance.create_instance(values)
-  dataset.add_instance(inst)
+  for tweet in tweets:
+    values = []
+    values.append(dataset.attribute(0).add_string_value(clean_tweet(tweet.text)))
+    values.append(Instance.missing_value())
+    inst = Instance.create_instance(values)
+    dataset.add_instance(inst)
 
   dataset.class_is_last()
 
