@@ -40,15 +40,7 @@ def hangle_file_upload(file_uploaded):
   return ''
 
 def load_classification_model(filename):
-  # test_filename = get_test_filename('evento1.arff')
-  # data = converters.load_any_file(test_filename)
-  # data.class_is_last()
   classifier, model = Classifier.deserialize(get_file_destinantion(filename))
-  # for index, inst in enumerate(data):
-  #   pred = classifier.classify_instance(inst)
-  #   dist = classifier.distribution_for_instance(inst)
-  #   print(str(index+1) + ": label index=" + str(pred) + ", class distribution=" + str(dist))
-
 
   return {
     "classes": model.class_attribute.values,
@@ -90,5 +82,11 @@ def create_dataset(tweets):
   return dataset
 
 def evaluate_model_and_testset(model, testset):
-  print(model['classes'])
-  print(testset)
+  predictions = []
+
+  for index, inst in enumerate(testset):
+    pred = model['classifier'].classify_instance(inst)
+    predictions.append(model['classes'][int(pred)])
+
+  return predictions
+

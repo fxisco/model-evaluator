@@ -29,12 +29,40 @@
           <span class="helper-text red-text" data-success="right">{{form.model.errors}}</span>
         {% endif %}
       </div>
-      <div class="center">
-        <button type="submit" class="waves-effect waves-light btn green">
-          PROCESS
-        </button>
+      <div class="col s12">
+        <div class="input-field col s6">
+          <select name="quantity">
+            <option value="10">10</option>
+            <option value="25">25</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+          </select>
+          <label>Number of tweets to evaluate</label>
+        </div>
+        <div class="col s6">
+          <div class="input-field">
+            <input type="text" name="date" class="datepicker">
+            <label for="birthdate">Date</label>
+          </div>
+        </div>
+      </div>
+      <div class="input-field col s12 center">
+          <button type="submit" class="waves-effect waves-light btn green">
+            PROCESS
+          </button>
       </div>
     </form>
   </div>
 </div>
+<script>
+   document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('select');
+    var instances = M.FormSelect.init(elems);
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    var elems = document.querySelectorAll('.datepicker');
+    var instances = M.Datepicker.init(elems, { format: "yyyy-mm-dd" , defaultDate: new Date(), setDefaultDate: true });
+  });
+</script>
 {% endblock %}

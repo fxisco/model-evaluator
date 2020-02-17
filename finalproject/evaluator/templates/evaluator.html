@@ -5,19 +5,20 @@
   <a href="/" class="btn-floating btn-large waves-effect waves-light green"><i class="material-icons">arrow_back</i></a>
   <h4>Keywords procesed</h4>
   {% for keyword in data.keywords %}
-    <div class="chip">
-      {{keyword}}
-    </div>
+  <div class="chip">
+    {{keyword}}
+  </div>
   {% endfor %}
 </div>
+<h6>Tweets found: <b>{{ data.size }}</b></h6>
 <div class="row">
   {% if data.tweets %}
     <table>
       <colgroup>
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
-        <col span="1" style="width: 25%;">
+        <col style="width: 25%;">
+        <col style="width: 25%;">
+        <col style="width: 25%;">
+        <col style="width: 25%;">
      </colgroup>
       <thead>
         <tr>
@@ -34,7 +35,7 @@
           <td>{{tweet.0.date}}</td>
           <td>{{tweet.0.text}}</td>
           <td>{{tweet.1}}</td>
-          <td>text</td>
+          <td class="center"><div class="chip">{{tweet.2}}</div></td>
         </tr>
         {% endfor %}
       </tbody>
