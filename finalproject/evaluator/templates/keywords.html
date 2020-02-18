@@ -5,6 +5,9 @@
   <div class="col s12 m6 offset-m3">
     <form action="/" method="post" enctype="multipart/form-data">
       {% csrf_token %}
+      <div title="10 keywords max. in file">
+        <i class="material-icons" style="color: gold; cursor:pointer;">info</i>
+      </div>
       <div class="file-field input-field">
         <div class="btn">
           <span>File with keywords</span>
@@ -47,7 +50,7 @@
         </div>
       </div>
       <div class="input-field col s12 center">
-          <button type="submit" class="waves-effect waves-light btn green">
+          <button type="submit" class="waves-effect waves-light btn teal lighten-1">
             PROCESS
           </button>
       </div>
@@ -55,7 +58,7 @@
   </div>
 </div>
 <script>
-   document.addEventListener('DOMContentLoaded', function() {
+  document.addEventListener('DOMContentLoaded', function() {
     var elems = document.querySelectorAll('select');
     var instances = M.FormSelect.init(elems);
   });

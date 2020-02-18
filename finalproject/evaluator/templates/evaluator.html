@@ -2,14 +2,19 @@
 
 {% block content %}
 <div class="row">
-  <a href="/" class="btn-floating btn-large waves-effect waves-light green"><i class="material-icons">arrow_back</i></a>
-  <h4>Keywords procesed</h4>
-  {% for keyword in data.keywords %}
-  <div class="chip">
-    {{keyword}}
-  </div>
-  {% endfor %}
+  <a href="/" class="btn-floating btn-large waves-effect waves-light teal lighten-1"><i class="material-icons">arrow_back</i></a>
 </div>
+<div class="row">
+  <h4 style="margin-top: 0;">Keywords procesed</h4>
+  <div class="col s12 m6">
+    {% for keyword in data.keywords %}
+    <div class="chip">
+      {{keyword}}
+    </div>
+    {% endfor %}
+  </div>
+</div>
+
 <h6>Tweets found: <b>{{ data.size }}</b></h6>
 <div class="row">
   {% if data.tweets %}

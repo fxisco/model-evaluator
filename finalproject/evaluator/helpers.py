@@ -24,9 +24,6 @@ def get_valid_keywords(text):
 def get_file_destinantion(filename):
   return Path(__file__).ancestor(3) + '/files_uploaded/' + filename
 
-def get_test_filename(filename):
-  return Path(__file__).ancestor(3) + '/tests_files/' + filename
-
 def hangle_file_upload(file_uploaded):
   file_id = uuid4()
   filename =  str(file_id) + '.model'

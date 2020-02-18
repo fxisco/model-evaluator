@@ -5,16 +5,17 @@ from urllib.parse import urlencode, unquote, parse_qs
 from GetOldTweets3 import manager
 import weka.core.jvm as jvm
 from datetime import datetime, timedelta
+from os import path
 
 from .forms import KeywordsForm
-from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset,evaluate_model_and_testset,get_cleaned_tweets
+from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset,evaluate_model_and_testset,get_cleaned_tweets, get_file_destinantion
 
 def index(request):
     form = KeywordsForm()
 
     if request.method == 'POST':
         form = KeywordsForm(request.POST, request.FILES)
-        print(form)
+
         if form.is_valid():
             csv_file = request.FILES['keywords'].read().decode("utf-8")
             lines = csv_file.splitlines()
@@ -39,6 +40,11 @@ def evaluate(request, data):
     filename = parsed_keys['filename'][0]
     quantity = int(parsed_keys['quantity'][0])
     date = parsed_keys['date'][0]
+    file_location = get_file_destinantion(filename)
+
+    if not path.exists(file_location):
+        return render(request, 'model_not_found.html')
+
     date_parsed = datetime.strptime(date, '%Y-%m-%d')
     next_date = date_parsed + timedelta(days=1)
 
