@@ -25,8 +25,10 @@ def index(request):
             data = {
                 'keywords': ','.join(cleaned_lines),
                 'filename': file_uploaded,
-                'quantity': request.POST['quantity'],
-                'date': request.POST['date']
+                'quantity': form.cleaned_data.get('quantity'),
+                'startdate': form.cleaned_data.get('startdate'),
+                'enddate': form.cleaned_data.get('enddate'),
+                'language': form.cleaned_data.get('language'),
             }
 
             return redirect(evaluate, data=urlencode(data))
@@ -39,14 +41,13 @@ def evaluate(request, data):
     parsed_string = parsed_keys['keywords'][0]
     filename = parsed_keys['filename'][0]
     quantity = int(parsed_keys['quantity'][0])
-    date = parsed_keys['date'][0]
+    startdate = parsed_keys['startdate'][0]
+    enddate = parsed_keys['enddate'][0]
+    language = parsed_keys['language'][0]
     file_location = get_file_destinantion(filename)
 
     if not path.exists(file_location):
         return render(request, 'model_not_found.html')
-
-    date_parsed = datetime.strptime(date, '%Y-%m-%d')
-    next_date = date_parsed + timedelta(days=1)
 
     keywords_parsed = parsed_string.split(',')
     query = ' OR '.join(keywords_parsed)
@@ -59,9 +60,9 @@ def evaluate(request, data):
     tweetCriteria = manager\
         .TweetCriteria()\
         .setQuerySearch(query)\
-        .setSince(date)\
-        .setUntil(str(next_date.date()))\
-        .setLang("it")\
+        .setSince(startdate)\
+        .setUntil(enddate)\
+        .setLang(language)\
         .setMaxTweets(quantity)
     tweets = manager.TweetManager.getTweets(tweetCriteria)
     cleaned_tweets = get_cleaned_tweets(tweets)
