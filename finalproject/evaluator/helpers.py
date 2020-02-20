@@ -9,6 +9,7 @@ from weka.core.classes import list_property_names
 import weka.core.converters as converters
 import weka.core.jvm as jvm
 import numpy as np
+import random
 
 class_values = ["nega", "neut", "posi"]
 RE_EMOJI = re.compile('[\U00010000-\U0010ffff]', flags=re.UNICODE)
@@ -87,3 +88,20 @@ def evaluate_model_and_testset(model, testset):
 
   return predictions
 
+def generate_random_colors(classes):
+  return ["#"+''.join([random.choice('0123456789ABCDEF') for j in range(6)])
+             for i in range(len(classes))]
+
+def get_value_of_classes(classes, predictions):
+  results = []
+
+  for item in classes:
+    count = 0
+
+    for prediction in predictions:
+      if prediction == item:
+        count+=1
+
+    results.append(count)
+
+  return results

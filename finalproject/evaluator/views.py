@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from os import path
 
 from .forms import KeywordsForm
-from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset,evaluate_model_and_testset,get_cleaned_tweets, get_file_destinantion
+from .helpers import get_valid_keywords, hangle_file_upload, load_classification_model,create_dataset,evaluate_model_and_testset,get_cleaned_tweets, get_file_destinantion, generate_random_colors, get_value_of_classes
 
 def index(request):
     form = KeywordsForm()
@@ -72,10 +72,17 @@ def evaluate(request, data):
 
     jvm.stop()
 
+    labels = model['classes']
+    values = get_value_of_classes(model['classes'], predictions)
+    fill_color = generate_random_colors(model['classes'])
+
     data = {
         "keywords": keywords_parsed if keywords_parsed else [],
         "tweets": zip(tweets, cleaned_tweets, predictions),
         "size": len(tweets),
+        "labels": labels,
+        "values": values,
+        "fill_color": fill_color
     }
 
     return render(request, 'evaluator.html', { "data": data })
