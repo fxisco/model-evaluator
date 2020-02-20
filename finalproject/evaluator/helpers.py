@@ -105,3 +105,12 @@ def get_value_of_classes(classes, predictions):
     results.append(count)
 
   return results
+
+def get_predictions_colors(predictions, classes, colors):
+  results = []
+
+  for item in predictions:
+    index = classes.index(item)
+    results.append(colors[index])
+
+  return results
